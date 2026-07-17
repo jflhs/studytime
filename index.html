@@ -38,7 +38,7 @@
     padding:6px 14px;border-radius:100px;margin-bottom:14px;
   }
   h1{font-family:'Black Han Sans', sans-serif;font-weight:400;font-size:30px;margin:0 0 10px;line-height:1.15;letter-spacing:-.01em;
-    color:#fff;text-shadow:0 2px 0 #A61E2A, 0 6px 18px rgba(230,57,70,.3);display:inline-block;}
+    color:#fff;text-shadow:0 2px 0 #A61E2A, 0 6px 18px rgba(230,57,70,.3);display:block;}
   .rainbow-bar{height:5px;border-radius:100px;margin-bottom:20px;background:linear-gradient(90deg,var(--mon),var(--tue),var(--wed),var(--thu),var(--fri),var(--sat),var(--sun));}
 
   .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.25);}
@@ -158,7 +158,8 @@
   .photo-tile.add-tile{border:1.5px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);font-size:11px;gap:2px;}
   .photo-tile.add-tile:hover{border-color:var(--accent);background:rgba(230,57,70,.08);}
   .photo-tile.add-tile .plus{font-size:20px;font-weight:700;line-height:1;}
-  .photo-count-note{font-size:11px;color:var(--ink-soft);margin:-6px 0 14px;text-align:left;line-height:1.6;}
+  .photo-count-note{font-size:11px;color:var(--ink-soft);margin:-6px 0 10px;text-align:left;line-height:1.6;}
+  .saved-at-info{font-size:11px;color:var(--gold);text-align:right;margin-bottom:10px;}
   .modal-actions{display:flex;gap:8px;}
   .btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;font-size:13.5px;cursor:pointer;font-family:inherit;}
   .btn-save{background:linear-gradient(90deg,var(--accent),#A61E2A);color:#fff;box-shadow:0 4px 14px rgba(230,57,70,.35);}
@@ -320,13 +321,13 @@
         <div class="weekdays"><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div><div>일</div></div>
         <div class="grid" id="calGrid"></div>
         <div class="legend"><span class="today-sample"></span>오늘</div>
-        <div class="footnote" style="margin-top:12px;">날짜를 눌러 그날의 순공시간과 증빙 사진을 기록하세요.</div>
+        <div class="footnote" style="margin-top:12px;">날짜를 눌러 오늘의 순공시간과 증빙 사진을 기록하세요.</div>
       </div>
 
       <div class="card note-card">
         <div class="notice-title">📣 응원 한마디 남기기</div>
-        <textarea id="cheerInput" placeholder="동료 전사들에게 응원 한마디를 남겨보세요"></textarea>
-        <button class="btn btn-save" id="cheerSend" style="width:100%;">보내기</button>
+        <textarea id="cheerInput" placeholder="동료들에게 응원 한마디를 남겨보세요"></textarea>
+        <button class="btn btn-save" id="cheerSend" style="width:100%;">남기기</button>
         <div class="share-note">익명으로 게시돼요 · 이름·학년은 공개되지 않아요</div>
       </div>
 
@@ -372,14 +373,15 @@
       <div class="date" id="modalDate">7월 9일</div>
       <button class="close-btn" id="closeModal">✕</button>
     </div>
-    <div class="lock-banner hidden" id="lockBanner">🔒 이 주는 마감되어 더 이상 수정할 수 없어요</div>
+    <div class="lock-banner hidden" id="lockBanner">🔒 기록 가능 기간(3일)이 지나 더 이상 수정할 수 없어요</div>
     <div class="time-row">
       <div class="time-field"><label>시간</label><input type="number" id="inputHours" min="0" max="24" value="0"></div>
       <div class="time-field"><label>분</label><input type="number" id="inputMinutes" min="0" max="59" value="0"></div>
     </div>
     <textarea id="inputNote" placeholder="메모 (선택)"></textarea>
     <div id="uploadArea"></div>
-    <div class="photo-count-note">사진은 하루 최대 5장까지 첨부할 수 있어요<br>오늘 날짜를 확인할 수 있는 사진으로 올려주세요</div>
+    <div class="photo-count-note">사진은 하루 최대 5장까지 첨부할 수 있어요<br>오늘 날짜를 확인할 수 있는 사진으로 올려주세요<br>⚠️ 증빙 사진이 없으면 인정되지 않을 수 있어요</div>
+    <div class="saved-at-info" id="savedAtInfo"></div>
     <div class="modal-actions">
       <button class="btn btn-delete" id="deleteBtn">삭제</button>
       <button class="btn btn-save" id="saveBtn">저장</button>
@@ -388,6 +390,18 @@
 </div>
 
 <div class="toast" id="toast">저장되었습니다</div>
+
+<div class="overlay" id="noPhotoConfirm">
+  <div class="modal" style="border-radius:20px;text-align:center;">
+    <div style="font-size:32px;margin-bottom:10px;">⚠️</div>
+    <div style="font-weight:800;font-size:16px;color:#fff;margin-bottom:8px;">증빙 사진이 없어요</div>
+    <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:22px;">사진 없이 저장하면 순공시간이<br>인정되지 않을 수 있어요.</div>
+    <div class="modal-actions">
+      <button class="btn btn-delete" id="noPhotoCancel">사진 첨부하기</button>
+      <button class="btn btn-save" id="noPhotoProceed">그래도 저장</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -408,27 +422,15 @@ const WEEK_RANGES = [
   {label:'4주', start:'2026-08-10', end:'2026-08-16', color:'#E8B44C'},
 ];
 
-// 각 주차가 잠기는 시각 (그 다음 주 월요일 오전 10시). 마지막 주는 잠금 없음.
-const WEEK_LOCK_AT = [
-  '2026-07-27T10:00:00',
-  '2026-08-03T10:00:00',
-  '2026-08-10T10:00:00',
-  null
-];
+// 각 날짜는 기록한 날로부터 3일 뒤 자정까지 수정 가능 (예: 7/20 기록 → 7/23 23:59까지 수정 가능, 7/24부터 잠김)
+const EDIT_GRACE_DAYS = 3;
 
 function isDateLocked(dateKey){
-  const dt = new Date(dateKey+'T00:00:00');
-  for(let i=0; i<WEEK_RANGES.length; i++){
-    const wr = WEEK_RANGES[i];
-    const s = new Date(wr.start+'T00:00:00');
-    const e = new Date(wr.end+'T00:00:00');
-    if(dt>=s && dt<=e){
-      const lockAt = WEEK_LOCK_AT[i];
-      if(!lockAt) return false;
-      return new Date() >= new Date(lockAt);
-    }
-  }
-  return false;
+  const entryDate = new Date(dateKey+'T00:00:00');
+  const lockAt = new Date(entryDate);
+  lockAt.setDate(lockAt.getDate() + EDIT_GRACE_DAYS);
+  lockAt.setHours(23,59,59,999);
+  return new Date() > lockAt;
 }
 
 const WEEKDAY = [
@@ -744,8 +746,33 @@ function openModal(key){
   $('saveBtn').classList.toggle('hidden', locked);
   $('deleteBtn').classList.toggle('hidden', locked);
 
+  if(entry.savedAt){
+    const sd = new Date(entry.savedAt);
+    $('savedAtInfo').textContent = `마지막 저장: ${sd.getMonth()+1}/${sd.getDate()} ${String(sd.getHours()).padStart(2,'0')}:${String(sd.getMinutes()).padStart(2,'0')}`;
+  } else {
+    $('savedAtInfo').textContent = '';
+  }
+
   renderPhotoGallery(locked);
   $('overlay').classList.add('open');
+}
+
+function updateSaveButtonState(){
+  // 사진이 없어도 저장 버튼은 항상 눌릴 수 있어요 (저장 시 안내만 표시)
+}
+
+function attachImageRetry(img, maxRetries){
+  maxRetries = maxRetries || 3;
+  let attempts = 0;
+  const baseSrc = img.getAttribute('src');
+  img.addEventListener('error', function onErr(){
+    if(attempts < maxRetries){
+      attempts++;
+      setTimeout(()=>{
+        img.src = baseSrc + (baseSrc.indexOf('?') > -1 ? '&' : '?') + '_retry=' + Date.now();
+      }, 900 * attempts); // 0.9초, 1.8초, 2.7초 간격으로 재시도
+    }
+  });
 }
 
 function renderPhotoGallery(locked){
@@ -762,15 +789,19 @@ function renderPhotoGallery(locked){
   html += `</div><input type="file" id="fileInput" accept="image/*" style="display:none;">`;
   area.innerHTML = html;
 
+  area.querySelectorAll('.photo-tile img').forEach(img => attachImageRetry(img));
+
   area.querySelectorAll('.remove-photo').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       pendingPhotos.splice(Number(btn.dataset.idx), 1);
       renderPhotoGallery();
+      updateSaveButtonState();
     });
   });
   const addTile = $('addPhotoTile');
   if(addTile) addTile.addEventListener('click', ()=> $('fileInput').click());
   $('fileInput').addEventListener('change', handleFileSelect);
+  updateSaveButtonState();
 }
 
 function handleFileSelect(e){
@@ -786,6 +817,7 @@ function handleFileSelect(e){
       canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
       pendingPhotos.push({type:'new', base64: canvas.toDataURL('image/jpeg', 0.7)});
       renderPhotoGallery();
+      updateSaveButtonState();
     };
     img.src = ev.target.result;
   };
@@ -794,20 +826,35 @@ function handleFileSelect(e){
 function closeModal(){ $('overlay').classList.remove('open'); activeDateKey=null; pendingPhotos=[]; }
 function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
 
+function showNoPhotoConfirm(){
+  return new Promise(resolve=>{
+    $('noPhotoConfirm').classList.add('open');
+    $('noPhotoCancel').onclick = ()=>{ $('noPhotoConfirm').classList.remove('open'); resolve(false); };
+    $('noPhotoProceed').onclick = ()=>{ $('noPhotoConfirm').classList.remove('open'); resolve(true); };
+  });
+}
+
 $('closeModal').addEventListener('click', closeModal);
 $('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeModal(); });
 
 $('saveBtn').addEventListener('click', async ()=>{
-  if(isDateLocked(activeDateKey)){ showToast('이 주는 마감되어 수정할 수 없어요'); return; }
+  if(isDateLocked(activeDateKey)){ showToast('기록 가능 기간(3일)이 지나 수정할 수 없어요'); return; }
   const h = Math.max(0, Number($('inputHours').value)||0);
   const m = Math.max(0, Math.min(59, Number($('inputMinutes').value)||0));
   const minutes = h*60+m;
   const note = $('inputNote').value.trim();
+  const isClearing = (minutes===0 && pendingPhotos.length===0 && !note);
+
+  if(!isClearing && pendingPhotos.length === 0){
+    const proceed = await showNoPhotoConfirm();
+    if(!proceed) return;
+  }
+
   const btn = $('saveBtn');
   btn.disabled = true; btn.textContent = '저장 중…';
 
   try{
-    if(minutes===0 && pendingPhotos.length===0 && !note){
+    if(isClearing){
       await api('deleteEntry', { studentKey: studentKey(), date: activeDateKey });
       delete entries[activeDateKey];
     } else {
@@ -823,7 +870,8 @@ $('saveBtn').addEventListener('click', async ()=>{
       }
       entries[activeDateKey] = {
         minutes, note,
-        photos: (res.result && res.result.photos) || []
+        photos: (res.result && res.result.photos) || [],
+        savedAt: res.result && res.result.savedAt
       };
       render(); closeModal(); showToast('저장되었습니다' + warn);
       btn.disabled = false; btn.textContent = '저장';
@@ -831,13 +879,13 @@ $('saveBtn').addEventListener('click', async ()=>{
     }
     render(); closeModal(); showToast('저장되었습니다');
   }catch(e){
-    showToast('저장에 실패했어요. 인터넷 연결을 확인하고 다시 시도해주세요.');
+    showToast(e && e.message ? e.message : '저장에 실패했어요. 인터넷 연결을 확인하고 다시 시도해주세요.');
   }
   btn.disabled = false; btn.textContent = '저장';
 });
 
 $('deleteBtn').addEventListener('click', async ()=>{
-  if(isDateLocked(activeDateKey)){ showToast('이 주는 마감되어 수정할 수 없어요'); return; }
+  if(isDateLocked(activeDateKey)){ showToast('기록 가능 기간(3일)이 지나 수정할 수 없어요'); return; }
   const btn = $('deleteBtn');
   btn.disabled = true;
   try{
