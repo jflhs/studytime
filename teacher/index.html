@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>순공시간 챌린지 · 교사용</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#FAFAFE; --card:#FFFFFF; --border:#ECEBF7; --ink:#241F3D; --ink-soft:#9490B0;
@@ -82,19 +85,55 @@
   .detail-head .d-name{font-weight:700;font-size:19px;}
   .detail-head .close-btn{background:none;border:none;font-size:20px;color:var(--ink-soft);cursor:pointer;line-height:1;}
   .detail-grade{font-size:12px;color:var(--ink-soft);margin-bottom:14px;}
-  .detail-summary{display:flex;gap:18px;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:14px;}
-  .detail-summary .d-stat{flex:1;text-align:center;}
-  .detail-summary .d-stat b{display:block;font-size:16px;font-weight:700;}
-  .detail-summary .d-stat small{font-size:10.5px;color:var(--ink-soft);}
-  .day-entry{padding:12px 2px;border-bottom:1px solid var(--border);}
-  .day-entry:last-child{border-bottom:none;}
-  .day-entry .de-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
-  .day-entry .de-date{font-size:13px;font-weight:700;}
-  .day-entry .de-time{font-size:13px;font-weight:700;color:var(--accent);}
-  .day-entry .de-note{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:6px;}
-  .day-photos{display:flex;gap:6px;flex-wrap:wrap;}
-  .day-photos a{display:block;width:56px;height:56px;border-radius:8px;overflow:hidden;}
-  .day-photos img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* 배틀로그 축소판 - 학생이 보는 화면과 동일한 다크 톤으로 스코프 처리 */
+  .battle-log-embed{
+    background:#151016;border-radius:16px;padding:20px;margin-bottom:14px;
+    --track:#2A1E22;--gold:#E8B44C;--b-border:#3A2126;--b-ink:#F5EDE4;--b-ink-soft:#B8A99C;
+    --mon:#C81E3A;--mon-bg:rgba(200,30,58,.22);--mon-tx:#FF9DA8;
+    --tue:#E63946;--tue-bg:rgba(230,57,70,.20);--tue-tx:#FFAFB6;
+    --wed:#F0632E;--wed-bg:rgba(240,99,46,.20);--wed-tx:#FFB98F;
+    --thu:#F2994A;--thu-bg:rgba(242,153,74,.20);--thu-tx:#FFD1A3;
+    --fri:#E8B44C;--fri-bg:rgba(232,180,76,.20);--fri-tx:#FFE1A8;
+    --sat:#D4A017;--sat-bg:rgba(212,160,23,.20);--sat-tx:#FFDD7A;
+    --sun:#B8860B;--sun-bg:rgba(184,134,11,.22);--sun-tx:#F2CC6B;
+  }
+  .b-ring-row{display:flex;align-items:center;gap:16px;}
+  .b-ring-wrap{position:relative;width:120px;height:120px;flex-shrink:0;}
+  .b-ring-wrap svg{transform:rotate(-90deg);display:block;}
+  .b-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .b-ring-total{font-family:'Black Han Sans', sans-serif;font-size:22px;color:#fff;}
+  .b-ring-total span{font-size:10px;font-weight:600;color:var(--b-ink-soft);margin-left:1px;}
+  .b-ring-label{font-size:9px;color:var(--b-ink-soft);margin-top:3px;}
+  .b-mini-stats{flex:1;display:flex;flex-direction:column;gap:6px;}
+  .b-mini-stats .stat{display:flex;justify-content:space-between;font-size:11.5px;color:var(--b-ink-soft);}
+  .b-mini-stats .stat b{font-family:'Black Han Sans', sans-serif;font-size:13px;color:var(--gold);font-weight:400;}
+  .b-week-bars{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;height:70px;margin-top:16px;padding-top:14px;border-top:1px solid var(--b-border);}
+  .b-week-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;}
+  .b-week-value{font-size:9.5px;font-weight:700;color:var(--b-ink-soft);margin-bottom:4px;white-space:nowrap;}
+  .b-week-track{flex:1;width:100%;max-width:26px;background:var(--track);border-radius:100px;display:flex;align-items:flex-end;overflow:hidden;}
+  .b-week-fill{width:100%;border-radius:100px;}
+  .b-week-label{font-size:9px;color:var(--b-ink-soft);margin-top:5px;}
+
+  .battle-cal{background:#151016;border-radius:16px;padding:20px;margin-bottom:14px;
+    --mon-bg:rgba(200,30,58,.22);--mon-tx:#FF9DA8;--tue-bg:rgba(230,57,70,.20);--tue-tx:#FFAFB6;
+    --wed-bg:rgba(240,99,46,.20);--wed-tx:#FFB98F;--thu-bg:rgba(242,153,74,.20);--thu-tx:#FFD1A3;
+    --fri-bg:rgba(232,180,76,.20);--fri-tx:#FFE1A8;--sat-bg:rgba(212,160,23,.20);--sat-tx:#FFDD7A;
+    --sun-bg:rgba(184,134,11,.22);--sun-tx:#F2CC6B;--gold:#E8B44C;--b-border:#3A2126;--b-ink-soft:#B8A99C;}
+  .battle-cal .cal-title{font-size:12px;font-weight:700;color:var(--b-ink-soft);margin-bottom:12px;text-align:center;}
+  .b-weekdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:5px;}
+  .b-weekdays div{text-align:center;font-size:9.5px;color:var(--b-ink-soft);font-weight:700;padding:3px 0;}
+  .b-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+  .b-day{position:relative;aspect-ratio:1/1;border-radius:9px;border:1px solid var(--b-border);background:#1A1315;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:3px;}
+  .b-day .b-num{font-weight:700;font-size:8px;color:var(--b-ink-soft);position:absolute;top:3px;left:4px;}
+  .b-day .b-time{font-family:'Black Han Sans', sans-serif;font-size:11px;font-weight:700;margin-top:4px;color:#fff;}
+  .b-day .b-cam{position:absolute;bottom:2px;right:3px;font-size:7px;}
+  .b-day-panel{margin-top:14px;padding-top:14px;border-top:1px solid var(--b-border);}
+  .b-day-panel .bd-date{font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;}
+  .b-day-panel .bd-note{font-size:12px;color:var(--b-ink-soft);line-height:1.5;margin-bottom:8px;}
+  .b-day-panel .bd-photos{display:flex;gap:6px;flex-wrap:wrap;}
+  .b-day-panel .bd-photos a{display:block;width:56px;height:56px;border-radius:8px;overflow:hidden;}
+  .b-day-panel .bd-photos img{width:100%;height:100%;object-fit:cover;display:block;}
 </style>
 </head>
 <body>
@@ -138,6 +177,12 @@
     </div>
 
     <div class="card">
+      <div class="refresh-link" id="refreshCheer">↻ 새로고침</div>
+      <div class="section-title">📣 응원 게시판</div>
+      <div id="cheerList"><div class="empty-state">불러오는 중…</div></div>
+    </div>
+
+    <div class="card">
       <div class="refresh-link" id="refreshNotes">↻ 새로고침</div>
       <div class="section-title">✉️ 학생 문의사항</div>
       <div id="noteList"><div class="empty-state">불러오는 중…</div></div>
@@ -153,11 +198,34 @@
       <button class="close-btn" id="closeDetail">✕</button>
     </div>
     <div class="detail-grade" id="detailGrade"></div>
-    <div class="detail-summary">
-      <div class="d-stat"><b id="detailTotal">0h 0m</b><small>총 순공시간</small></div>
-      <div class="d-stat"><b id="detailDays">0/28</b><small>기록한 날</small></div>
+
+    <div class="battle-log-embed">
+      <div class="b-ring-row">
+        <div class="b-ring-wrap">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--track)" stroke-width="11"/>
+            <g id="detailRingSegments"></g>
+          </svg>
+          <div class="b-ring-center">
+            <div class="b-ring-total" id="detailRingTotal">0<span>h 0m</span></div>
+            <div class="b-ring-label" id="detailRingPercent">목표의 0%</div>
+          </div>
+        </div>
+        <div class="b-mini-stats">
+          <div class="stat"><span>목표</span><b>100h</b></div>
+          <div class="stat"><span>남은 시간</span><b id="detailRemain">100h</b></div>
+          <div class="stat"><span>기록한 날</span><b id="detailDays">0/28</b></div>
+        </div>
+      </div>
+      <div class="b-week-bars" id="detailWeekBars"></div>
     </div>
-    <div id="detailList"><div class="empty-state">불러오는 중…</div></div>
+
+    <div class="battle-cal">
+      <div class="cal-title" id="detailCalRange">챌린지 캘린더 · 7/20 – 8/16</div>
+      <div class="b-weekdays"><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div><div>일</div></div>
+      <div class="b-grid" id="detailCalGrid"></div>
+      <div class="b-day-panel" id="detailDayPanel"></div>
+    </div>
   </div>
 </div>
 
@@ -168,12 +236,44 @@
 const API_URL = 'https://script.google.com/macros/s/AKfycbyIA3xAKoxX5XS-I1Ts1SYkMJkKfNepGFy7Mm5psCoK_nrUKDflRiJi1P7N58N7cIYM/exec';
 const CHALLENGE_START = '2026-07-20';
 const CHALLENGE_END = '2026-08-16';
+const GOAL_HOURS = 100;
+const RING_CIRC = 2 * Math.PI * 50;
+
+const WEEK_RANGES = [
+  {label:'1주', start:'2026-07-20', end:'2026-07-26', color:'#7C5CFC'},
+  {label:'2주', start:'2026-07-27', end:'2026-08-02', color:'#FF6B9D'},
+  {label:'3주', start:'2026-08-03', end:'2026-08-09', color:'#4DABF7'},
+  {label:'4주', start:'2026-08-10', end:'2026-08-16', color:'#51CF66'},
+];
+const WEEKDAY = [
+  {label:'월', var:'--mon', bg:'--mon-bg', tx:'--mon-tx'},
+  {label:'화', var:'--tue', bg:'--tue-bg', tx:'--tue-tx'},
+  {label:'수', var:'--wed', bg:'--wed-bg', tx:'--wed-tx'},
+  {label:'목', var:'--thu', bg:'--thu-bg', tx:'--thu-tx'},
+  {label:'금', var:'--fri', bg:'--fri-bg', tx:'--fri-tx'},
+  {label:'토', var:'--sat', bg:'--sat-bg', tx:'--sat-tx'},
+  {label:'일', var:'--sun', bg:'--sun-bg', tx:'--sun-tx'},
+];
 
 let rosterData = [];
 let rosterSort = 'name';
 let rosterGradeFilter = '';
 
 const $ = (id) => document.getElementById(id);
+
+function attachImageRetry(img, maxRetries){
+  maxRetries = maxRetries || 3;
+  let attempts = 0;
+  const baseSrc = img.getAttribute('src');
+  img.addEventListener('error', function onErr(){
+    if(attempts < maxRetries){
+      attempts++;
+      setTimeout(()=>{
+        img.src = baseSrc + (baseSrc.indexOf('?') > -1 ? '&' : '?') + '_retry=' + Date.now();
+      }, 900 * attempts);
+    }
+  });
+}
 const pad = (n) => String(n).padStart(2,'0');
 
 function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
@@ -200,6 +300,7 @@ async function api(action, payload, _retried){
 loadNotice();
 loadLeaderboard();
 loadRoster();
+loadCheerBoard();
 loadNotes();
 
 /* Notice */
@@ -315,69 +416,225 @@ document.querySelectorAll('.filter-chip').forEach(btn=>{
   });
 });
 
-/* ---------- 학생 상세보기 ---------- */
+/* ---------- 학생 상세보기 (배틀로그 축소판) ---------- */
 function isInChallengeRange(dateKey){
   const dt = new Date(dateKey+'T00:00:00');
   const s = new Date(CHALLENGE_START+'T00:00:00');
   const e = new Date(CHALLENGE_END+'T00:00:00');
   return dt>=s && dt<=e;
 }
+const weekdayIndex = (y,m,d) => { const wd = new Date(y,m,d).getDay(); return (wd+6)%7; };
+const pad2 = (n) => String(n).padStart(2,'0');
+const toDateKey = (y,m,d) => `${y}-${pad2(m+1)}-${pad2(d)}`;
+
+function challengeDates(){
+  const dates = [];
+  const cur = new Date(CHALLENGE_START+'T00:00:00');
+  const end = new Date(CHALLENGE_END+'T00:00:00');
+  while(cur <= end){ dates.push(new Date(cur)); cur.setDate(cur.getDate()+1); }
+  return dates;
+}
+
+let detailEntries = {};
 
 async function openStudentDetail(r){
   $('detailName').textContent = r.name;
   $('detailGrade').textContent = r.grade || '';
-  $('detailTotal').textContent = '0h 0m';
+  $('detailRingTotal').innerHTML = '0<span>h 0m</span>';
+  $('detailRingPercent').textContent = '목표의 0%';
+  $('detailRemain').textContent = '100h';
   $('detailDays').textContent = '0/28';
-  $('detailList').innerHTML = '<div class="empty-state">불러오는 중…</div>';
+  $('detailWeekBars').innerHTML = '';
+  $('detailCalGrid').innerHTML = '';
+  $('detailDayPanel').innerHTML = '';
   $('detailOverlay').classList.add('open');
 
   try{
     const res = await api('getEntries', { studentKey: r.studentKey });
-    const entries = res.entries || {};
-    const dateKeys = Object.keys(entries)
-      .filter(k => isInChallengeRange(k) && entries[k].minutes)
-      .sort();
+    detailEntries = res.entries || {};
+    renderDetailRing();
+    renderDetailWeekBars();
+    renderDetailCalendar();
+  }catch(e){
+    $('detailWeekBars').innerHTML = '<div class="empty-state">기록을 불러오지 못했어요.</div>';
+  }
+}
 
-    let totalMinutes = 0;
-    dateKeys.forEach(k => totalMinutes += entries[k].minutes);
-    const h = Math.floor(totalMinutes/60), m = totalMinutes%60;
-    $('detailTotal').textContent = `${h}h ${m}m`;
-    $('detailDays').textContent = `${dateKeys.length}/28`;
-
-    if(dateKeys.length === 0){
-      $('detailList').innerHTML = '<div class="empty-state">아직 기록한 날이 없어요.</div>';
-      return;
-    }
-
-    $('detailList').innerHTML = '';
-    dateKeys.forEach(key=>{
-      const entry = entries[key];
-      const [y,mo,d] = key.split('-').map(Number);
-      const eh = Math.floor(entry.minutes/60), em = entry.minutes%60;
-      const row = document.createElement('div');
-      row.className = 'day-entry';
-      let html = `<div class="de-head"><div class="de-date">${mo}월 ${d}일</div><div class="de-time">${eh>0?eh+'h':''}${em>0?em+'m':(eh===0?'0m':'')}</div></div>`;
-      if(entry.note){
-        html += `<div class="de-note">${entry.note.replace(/</g,'&lt;')}</div>`;
+function computeDetailTotals(){
+  let totalMinutes = 0, daysLogged = 0;
+  const byWeekday = [0,0,0,0,0,0,0];
+  Object.keys(detailEntries).forEach(key=>{
+    const [y,m,d] = key.split('-').map(Number);
+    if(isInChallengeRange(key)){
+      const e = detailEntries[key];
+      if(e && e.minutes){
+        totalMinutes += e.minutes; daysLogged += 1;
+        byWeekday[weekdayIndex(y,m-1,d)] += e.minutes;
       }
+    }
+  });
+  return {totalMinutes, daysLogged, byWeekday};
+}
+
+function renderDetailRing(){
+  const embed = document.querySelector('.battle-log-embed');
+  const cssVar = (name) => getComputedStyle(embed).getPropertyValue(name).trim();
+  const {totalMinutes, daysLogged, byWeekday} = computeDetailTotals();
+  const goalMinutes = GOAL_HOURS * 60;
+
+  const seg = $('detailRingSegments');
+  seg.innerHTML = '';
+  let cumulative = 0;
+  WEEKDAY.forEach((wd, i)=>{
+    let len = (byWeekday[i]/goalMinutes) * RING_CIRC;
+    if(cumulative + len > RING_CIRC) len = Math.max(0, RING_CIRC - cumulative);
+    if(len > 0.5){
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx','60'); c.setAttribute('cy','60'); c.setAttribute('r','50');
+      c.setAttribute('fill','none');
+      c.setAttribute('stroke', cssVar(wd.var) || '#ccc');
+      c.setAttribute('stroke-width','11');
+      c.setAttribute('stroke-dasharray', `${len.toFixed(2)} ${(RING_CIRC-len).toFixed(2)}`);
+      c.setAttribute('stroke-dashoffset', `${(-cumulative).toFixed(2)}`);
+      seg.appendChild(c);
+    }
+    cumulative += len;
+  });
+
+  const h = Math.floor(totalMinutes/60), m = totalMinutes % 60;
+  $('detailRingTotal').innerHTML = `${h}<span>h ${m}m</span>`;
+  const pct = Math.round((totalMinutes/goalMinutes)*100);
+  $('detailRingPercent').textContent = `목표의 ${pct}%`;
+  const remain = Math.max(0, goalMinutes - totalMinutes);
+  $('detailRemain').textContent = `${Math.floor(remain/60)}h ${remain%60}m`;
+  $('detailDays').textContent = `${daysLogged}/28`;
+}
+
+function computeDetailWeeklyTotals(){
+  return WEEK_RANGES.map(wr=>{
+    const start = new Date(wr.start+'T00:00:00');
+    const end = new Date(wr.end+'T00:00:00');
+    let mins = 0;
+    Object.keys(detailEntries).forEach(key=>{
+      const [y,m,d] = key.split('-').map(Number);
+      const dt = new Date(y,m-1,d);
+      if(dt>=start && dt<=end){
+        const e = detailEntries[key];
+        if(e && e.minutes) mins += e.minutes;
+      }
+    });
+    return mins;
+  });
+}
+
+function renderDetailWeekBars(){
+  const weekly = computeDetailWeeklyTotals();
+  const maxRef = Math.max(30*60, ...weekly);
+  const container = $('detailWeekBars');
+  container.innerHTML = '';
+  WEEK_RANGES.forEach((wr, i)=>{
+    const mins = weekly[i];
+    const h = Math.floor(mins/60), m = mins%60;
+    const pct = Math.min(100, Math.round((mins/maxRef)*100));
+    const col = document.createElement('div');
+    col.className = 'b-week-col';
+    col.innerHTML = `
+      <div class="b-week-value">${h>0?h+'h':''}${m>0?m+'m':(h===0?'0m':'')}</div>
+      <div class="b-week-track"><div class="b-week-fill" style="height:${pct}%;background:${wr.color};"></div></div>
+      <div class="b-week-label">${wr.label}</div>
+    `;
+    container.appendChild(col);
+  });
+}
+
+function renderDetailCalendar(){
+  const cal = document.querySelector('.battle-cal');
+  const cssVar = (name) => getComputedStyle(cal).getPropertyValue(name).trim();
+  const grid = $('detailCalGrid'); grid.innerHTML = '';
+  $('detailDayPanel').innerHTML = '';
+  const dates = challengeDates();
+  const first = dates[0];
+  let startOffset = first.getDay() - 1; if(startOffset < 0) startOffset = 6;
+  for(let i=0;i<startOffset;i++){
+    const f = document.createElement('div'); f.style.visibility='hidden'; f.className='b-day'; grid.appendChild(f);
+  }
+  dates.forEach(dt=>{
+    const y = dt.getFullYear(), m = dt.getMonth(), d = dt.getDate();
+    const key = toDateKey(y,m,d);
+    const entry = detailEntries[key];
+    const wIdx = weekdayIndex(y,m,d);
+    const wd = WEEKDAY[wIdx];
+    const cell = document.createElement('div');
+    cell.className = 'b-day';
+    if(entry && entry.minutes){
+      cell.style.background = cssVar(wd.bg);
+      cell.style.borderColor = 'transparent';
+    }
+    const num = document.createElement('div'); num.className='b-num'; num.textContent = `${m+1}/${d}`;
+    cell.appendChild(num);
+    if(entry && entry.minutes){
+      const t = document.createElement('div');
+      t.className = 'b-time';
+      t.style.color = cssVar(wd.tx);
+      const h = Math.floor(entry.minutes/60), mm = entry.minutes%60;
+      t.textContent = h>0 ? `${h}h${mm>0?mm:''}` : `${mm}m`;
+      cell.appendChild(t);
+    }
+    if(entry && entry.photos && entry.photos.length){
+      const cam = document.createElement('div'); cam.className='b-cam'; cam.textContent='📷';
+      cell.appendChild(cam);
+    }
+    cell.addEventListener('click', ()=>{
+      const panel = $('detailDayPanel');
+      if(!entry || (!entry.note && (!entry.photos || !entry.photos.length))){
+        panel.innerHTML = `<div class="bd-date">${m+1}월 ${d}일</div><div class="bd-note">기록된 메모나 사진이 없어요.</div>`;
+        return;
+      }
+      let html = `<div class="bd-date">${m+1}월 ${d}일</div>`;
+      if(entry.note) html += `<div class="bd-note">${entry.note.replace(/</g,'&lt;')}</div>`;
       if(entry.photos && entry.photos.length){
-        html += `<div class="day-photos">`;
-        entry.photos.forEach(p=>{
-          html += `<a href="${p.url}" target="_blank" rel="noopener"><img src="${p.url}"></a>`;
-        });
+        html += `<div class="bd-photos">`;
+        entry.photos.forEach(p=>{ html += `<a href="${p.url}" target="_blank" rel="noopener"><img src="${p.url}"></a>`; });
         html += `</div>`;
       }
-      row.innerHTML = html;
-      $('detailList').appendChild(row);
+      panel.innerHTML = html;
+      panel.querySelectorAll('.bd-photos img').forEach(img => attachImageRetry(img));
     });
-  }catch(e){
-    $('detailList').innerHTML = '<div class="empty-state">기록을 불러오지 못했어요.</div>';
-  }
+    grid.appendChild(cell);
+  });
 }
 $('closeDetail').addEventListener('click', ()=> $('detailOverlay').classList.remove('open'));
 $('detailOverlay').addEventListener('click', (e)=>{ if(e.target.id==='detailOverlay') $('detailOverlay').classList.remove('open'); });
 
 /* Teacher notes */
+/* Cheer board (교사용은 이름/학년 공개) */
+async function loadCheerBoard(){
+  const container = $('cheerList');
+  container.innerHTML = '<div class="empty-state">불러오는 중…</div>';
+  let posts = [];
+  try{
+    const res = await api('getBoardPosts');
+    posts = res.posts || [];
+  }catch(e){
+    container.innerHTML = '<div class="empty-state">응원 글을 불러오지 못했어요.</div>';
+    return;
+  }
+  if(posts.length === 0){
+    container.innerHTML = '<div class="empty-state">아직 응원 글이 없어요.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  posts.forEach(p=>{
+    const row = document.createElement('div');
+    row.className = 'note-row';
+    const d = p.ts ? new Date(p.ts) : null;
+    const timeStr = d ? `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}` : '';
+    row.innerHTML = `<div class="note-meta">${p.grade||''} ${p.name||'익명'} · ${timeStr}</div><div class="note-msg">${(p.message||'').replace(/</g,'&lt;')}</div>`;
+    container.appendChild(row);
+  });
+}
+$('refreshCheer').addEventListener('click', loadCheerBoard);
+
 async function loadNotes(){
   const container = $('noteList');
   container.innerHTML = '<div class="empty-state">불러오는 중…</div>';
