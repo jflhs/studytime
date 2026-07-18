@@ -132,6 +132,8 @@
   input:disabled, textarea:disabled{opacity:.5;background:#1A1315;}
   /* 오늘 표시: 배경색과 상관없이 항상 또렷하게 보이도록 골드 이중 링 */
   .day.today{box-shadow:0 0 0 2px var(--paper), 0 0 0 4.5px var(--gold);}
+  .day.future-day{opacity:.4;}
+  .day.future-day .num{color:var(--ink-soft);}
   .day.today .num{color:var(--gold);}
   .legend{display:flex;gap:12px;margin-top:12px;font-size:10.5px;color:var(--ink-soft);align-items:center;flex-wrap:wrap;}
   .legend .today-sample{width:16px;height:16px;border-radius:5px;background:var(--paper);box-shadow:0 0 0 2px var(--paper), 0 0 0 4px var(--gold);display:inline-block;margin-right:8px;}
@@ -236,7 +238,7 @@
           <input type="text" id="inName" placeholder="이름">
         </div>
       </div>
-      <button class="btn-enter" id="enterBtn">⚔️ 전투 시작하기</button>
+      <button class="btn-enter" id="enterBtn">⚔️ 시작하기</button>
     </div>
   </div>
 
@@ -247,7 +249,7 @@
 
     <div class="greet">
       <div class="who"><b id="greetName">-</b> <span id="greetGrade"></span></div>
-      <div class="edit-link" id="editInfo">정보 수정</div>
+      <div class="edit-link" id="editInfo">나가기</div>
     </div>
 
     <div class="program-bar">
@@ -321,12 +323,12 @@
         <div class="weekdays"><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div><div>일</div></div>
         <div class="grid" id="calGrid"></div>
         <div class="legend"><span class="today-sample"></span>오늘</div>
-        <div class="footnote" style="margin-top:12px;">날짜를 눌러 오늘의 순공시간과 증빙 사진을 기록하세요.</div>
+        <div class="footnote" style="margin-top:12px;">날짜를 눌러 그날의 순공시간과 증빙 사진을 기록하세요.</div>
       </div>
 
       <div class="card note-card">
         <div class="notice-title">📣 응원 한마디 남기기</div>
-        <textarea id="cheerInput" placeholder="동료들에게 응원 한마디를 남겨보세요"></textarea>
+        <textarea id="cheerInput" placeholder="동료 전사들에게 응원 한마디를 남겨보세요"></textarea>
         <button class="btn btn-save" id="cheerSend" style="width:100%;">남기기</button>
         <div class="share-note">익명으로 게시돼요 · 이름·학년은 공개되지 않아요</div>
       </div>
@@ -334,7 +336,7 @@
       <div class="card note-card">
         <div class="notice-title">✉️ 선생님께 남기는 말</div>
         <textarea id="teacherNoteInput" placeholder="예: 사진이 안 올라가요, 시간 입력이 안 돼요 등 무엇이든 남겨주세요"></textarea>
-        <button class="btn btn-save" id="teacherNoteSend" style="width:100%;">보내기</button>
+        <button class="btn btn-save" id="teacherNoteSend" style="width:100%;">남기기</button>
         <div class="note-sent" id="noteSentMsg"></div>
       </div>
     </div>
@@ -374,6 +376,7 @@
       <button class="close-btn" id="closeModal">✕</button>
     </div>
     <div class="lock-banner hidden" id="lockBanner">🔒 기록 가능 기간(3일)이 지나 더 이상 수정할 수 없어요</div>
+    <div class="lock-banner hidden" id="futureBanner" style="background:rgba(232,180,76,.12);border-color:rgba(232,180,76,.28);">📅 아직 오지 않은 날짜예요. 그날이 되면 기록할 수 있어요</div>
     <div class="time-row">
       <div class="time-field"><label>시간</label><input type="number" id="inputHours" min="0" max="24" value="0"></div>
       <div class="time-field"><label>분</label><input type="number" id="inputMinutes" min="0" max="59" value="0"></div>
@@ -431,6 +434,13 @@ function isDateLocked(dateKey){
   lockAt.setDate(lockAt.getDate() + EDIT_GRACE_DAYS);
   lockAt.setHours(23,59,59,999);
   return new Date() > lockAt;
+}
+
+function isFutureDate(dateKey){
+  const entryDate = new Date(dateKey+'T00:00:00');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  return entryDate > today;
 }
 
 const WEEKDAY = [
@@ -697,6 +707,7 @@ function renderCalendar(){
     const cell = document.createElement('div');
     cell.className = 'day';
     if(key === todayKey) cell.classList.add('today');
+    if(isFutureDate(key)) cell.classList.add('future-day');
     if(entry && entry.minutes){
       cell.style.background = cssVar(wd.bg);
       cell.style.borderColor = 'transparent';
@@ -732,6 +743,7 @@ function openModal(key){
   activeDateKey = key;
   const entry = entries[key] || {};
   const locked = isDateLocked(key);
+  const future = isFutureDate(key);
   pendingPhotos = (entry.photos || []).map(p => ({type:'existing', url:p.url, fileId:p.fileId}));
   const [y,m,d] = key.split('-').map(Number);
   $('modalDate').textContent = `${m}월 ${d}일`;
@@ -739,12 +751,13 @@ function openModal(key){
   $('inputMinutes').value = entry.minutes ? entry.minutes%60 : 0;
   $('inputNote').value = entry.note || '';
 
-  $('lockBanner').classList.toggle('hidden', !locked);
-  $('inputHours').disabled = locked;
-  $('inputMinutes').disabled = locked;
-  $('inputNote').disabled = locked;
+  $('lockBanner').classList.toggle('hidden', !locked || future);
+  $('futureBanner').classList.toggle('hidden', !future);
+  $('inputHours').disabled = locked || future;
+  $('inputMinutes').disabled = locked || future;
+  $('inputNote').disabled = locked || future;
   $('saveBtn').classList.toggle('hidden', locked);
-  $('deleteBtn').classList.toggle('hidden', locked);
+  $('deleteBtn').classList.toggle('hidden', locked || future);
 
   if(entry.savedAt){
     const sd = new Date(entry.savedAt);
@@ -753,7 +766,7 @@ function openModal(key){
     $('savedAtInfo').textContent = '';
   }
 
-  renderPhotoGallery(locked);
+  renderPhotoGallery(locked || future);
   $('overlay').classList.add('open');
 }
 
@@ -838,6 +851,7 @@ $('closeModal').addEventListener('click', closeModal);
 $('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeModal(); });
 
 $('saveBtn').addEventListener('click', async ()=>{
+  if(isFutureDate(activeDateKey)){ showToast('아직 날짜가 되지 않아 저장할 수 없어요'); return; }
   if(isDateLocked(activeDateKey)){ showToast('기록 가능 기간(3일)이 지나 수정할 수 없어요'); return; }
   const h = Math.max(0, Number($('inputHours').value)||0);
   const m = Math.max(0, Math.min(59, Number($('inputMinutes').value)||0));
