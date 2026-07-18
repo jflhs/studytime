@@ -323,14 +323,14 @@
         <div class="weekdays"><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div><div>일</div></div>
         <div class="grid" id="calGrid"></div>
         <div class="legend"><span class="today-sample"></span>오늘</div>
-        <div class="footnote" style="margin-top:12px;">날짜를 눌러 그날의 순공시간과 증빙 사진을 기록하세요.</div>
+        <div class="footnote" style="margin-top:12px;">날짜를 눌러 오늘의 순공시간과 증빙 사진을 기록하세요.</div>
       </div>
 
       <div class="card note-card">
         <div class="notice-title">📣 응원 한마디 남기기</div>
         <textarea id="cheerInput" placeholder="동료 전사들에게 응원 한마디를 남겨보세요"></textarea>
         <button class="btn btn-save" id="cheerSend" style="width:100%;">남기기</button>
-        <div class="share-note">익명으로 게시돼요 · 이름·학년은 공개되지 않아요</div>
+        <div class="share-note">익명으로 게시돼요. 이름·학년은 공개되지 않아요</div>
       </div>
 
       <div class="card note-card">
@@ -611,12 +611,12 @@ function renderRing(){
 function renderMotivation(pct){
   let title, desc;
   if(pct >= 120){ title='전설의 시작'; desc='한계를 넘어섰다. 이제 아무도 널 막을 수 없다.'; }
-  else if(pct >= 100){ title='정복 완료!'; desc='목표를 넘어섰다. 진짜 전사다.'; }
+  else if(pct >= 100){ title='정복 완료!'; desc='목표를 달성했다. 진짜 전사다.'; }
   else if(pct >= 70){ title='전사여, 계속하라'; desc='거의 다 왔다. 여기서 멈추면 그 동안의 땀이 아깝다.'; }
   else if(pct >= 50){ title='절반을 넘었다'; desc='꾸준함이 곧 힘이다. 속도를 늦추지 마라.'; }
   else if(pct >= 40){ title='속도가 붙는다'; desc='흐름을 탔다. 이대로만 밀어붙여라.'; }
   else if(pct >= 10){ title='시작이 반이다'; desc='첫 걸음을 뗐다. 이제 리듬을 만들 시간이다.'; }
-  else { title='전투는 이제부터'; desc='아직 늦지 않았다. 오늘 첫 기록을 남겨라.'; }
+  else { title='전투는 이제부터'; desc='아직 늦지 않았다. 첫 기록을 남겨라.'; }
 
   $('motivateTitle').textContent = title;
   $('motivateDesc').textContent = desc;
