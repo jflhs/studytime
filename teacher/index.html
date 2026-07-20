@@ -275,6 +275,7 @@ const $ = (id) => document.getElementById(id);
 function attachImageRetry(img, maxRetries){
   maxRetries = maxRetries || 3;
   let attempts = 0;
+  let usedFallback = false;
   const baseSrc = img.getAttribute('src');
   img.addEventListener('error', function onErr(){
     if(attempts < maxRetries){
@@ -282,6 +283,9 @@ function attachImageRetry(img, maxRetries){
       setTimeout(()=>{
         img.src = baseSrc + (baseSrc.indexOf('?') > -1 ? '&' : '?') + '_retry=' + Date.now();
       }, 900 * attempts);
+    } else if(!usedFallback && img.dataset.fileid){
+      usedFallback = true; attempts = 0;
+      img.src = 'https://drive.google.com/uc?export=view&id=' + img.dataset.fileid;
     }
   });
 }
@@ -610,7 +614,7 @@ function renderDetailCalendar(){
       if(entry.note) html += `<div class="bd-note">${entry.note.replace(/</g,'&lt;')}</div>`;
       if(entry.photos && entry.photos.length){
         html += `<div class="bd-photos">`;
-        entry.photos.forEach(p=>{ html += `<a href="${p.url}" target="_blank" rel="noopener"><img src="${p.url}"></a>`; });
+        entry.photos.forEach(p=>{ html += `<a href="${p.url}" target="_blank" rel="noopener"><img src="${p.url}" data-fileid="${p.fileId||''}"></a>`; });
         html += `</div>`;
       }
       panel.innerHTML = html;
