@@ -138,6 +138,7 @@
   .b-day-panel .bd-photos{display:flex;gap:6px;flex-wrap:wrap;}
   .b-day-panel .bd-photos a{display:block;width:56px;height:56px;border-radius:8px;overflow:hidden;}
   .b-day-panel .bd-photos img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-loading-img{background:var(--track);}
 </style>
 </head>
 <body>
@@ -284,6 +285,7 @@ function attachImageRetry(img, maxRetries){
     }
   });
 }
+
 const pad = (n) => String(n).padStart(2,'0');
 
 function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
