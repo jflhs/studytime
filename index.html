@@ -343,7 +343,7 @@
         <div class="notice-title">📣 응원 한마디 남기기</div>
         <textarea id="cheerInput" placeholder="동료들에게 응원 한마디를 남겨보세요"></textarea>
         <button class="btn btn-save" id="cheerSend" style="width:100%;">남기기</button>
-        <div class="share-note">익명으로 게시돼요· 이름·학년은 공개되지 않아요</div>
+        <div class="share-note">익명으로 게시돼요 · 이름·학년은 공개되지 않아요</div>
       </div>
 
       <div class="card note-card">
@@ -550,6 +550,9 @@ async function showApp(){
   $('appMain').classList.remove('hidden');
   $('greetName').textContent = studentName;
   $('greetGrade').textContent = studentGrade;
+
+  // 아직 순공시간을 한 번도 기록하지 않았어도 교사용 학생 목록에 뜨도록 등록
+  api('registerStudent', { studentKey: studentKey(), grade: studentGrade, name: studentName }).catch(()=>{});
 
   showToast('불러오는 중…');
   try{
