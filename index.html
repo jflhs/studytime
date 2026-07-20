@@ -816,6 +816,7 @@ function updateSaveButtonState(){
 function attachImageRetry(img, maxRetries){
   maxRetries = maxRetries || 3;
   let attempts = 0;
+  let usedFallback = false;
   const baseSrc = img.getAttribute('src');
   img.addEventListener('error', function onErr(){
     if(attempts < maxRetries){
@@ -823,6 +824,10 @@ function attachImageRetry(img, maxRetries){
       setTimeout(()=>{
         img.src = baseSrc + (baseSrc.indexOf('?') > -1 ? '&' : '?') + '_retry=' + Date.now();
       }, 900 * attempts); // 0.9초, 1.8초, 2.7초 간격으로 재시도
+    } else if(!usedFallback && img.dataset.fileid){
+      // 기본 형식이 계속 실패하면 다른 구글 이미지 주소 형식으로 한 번 더 시도
+      usedFallback = true; attempts = 0;
+      img.src = 'https://drive.google.com/uc?export=view&id=' + img.dataset.fileid;
     }
   });
 }
@@ -833,7 +838,8 @@ function renderPhotoGallery(locked){
   let html = `<div class="photo-gallery">`;
   pendingPhotos.forEach((p, idx)=>{
     const src = p.type === 'existing' ? p.url : p.base64;
-    html += `<div class="photo-tile"><img src="${src}">${locked ? '' : `<button class="remove-photo" data-idx="${idx}">✕</button>`}</div>`;
+    const fileIdAttr = p.type === 'existing' && p.fileId ? ` data-fileid="${p.fileId}"` : '';
+    html += `<div class="photo-tile"><img src="${src}"${fileIdAttr}>${locked ? '' : `<button class="remove-photo" data-idx="${idx}">✕</button>`}</div>`;
   });
   if(!locked && pendingPhotos.length < MAX_PHOTOS){
     html += `<div class="photo-tile add-tile" id="addPhotoTile"><span class="plus">+</span>추가</div>`;
