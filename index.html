@@ -140,6 +140,10 @@
 
   .note-card textarea{margin-bottom:10px;min-height:70px;}
   .note-sent{font-size:11px;color:var(--ink-soft);margin-top:8px;}
+  .reply-item{background:rgba(232,180,76,.10);border:1px solid rgba(232,180,76,.25);border-radius:10px;padding:10px 12px;margin-bottom:10px;}
+  .reply-item .r-label{font-size:10.5px;font-weight:800;color:var(--gold);margin-bottom:3px;}
+  .reply-item .r-msg{font-size:12.5px;color:var(--ink);line-height:1.5;}
+  .reply-item .r-time{font-size:10px;color:var(--ink-soft);margin-top:4px;}
 
   .overlay{position:fixed;inset:0;background:rgba(31,42,68,.45);display:none;align-items:flex-end;justify-content:center;z-index:50;}
   .overlay.open{display:flex;}
@@ -310,7 +314,7 @@
           </div>
           <div class="ring-side">
             <div class="motivate-title" id="motivateTitle">전투는 이제부터</div>
-            <div class="motivate-desc" id="motivateDesc">아직 늦지 않았다. 첫 기록을 남겨라.</div>
+            <div class="motivate-desc" id="motivateDesc">아직 늦지 않았다. 오늘 첫 기록을 남겨라.</div>
             <div class="fire-row" id="fireRow"></div>
             <div class="mini-stats">
               <div class="stat"><b id="statGoal">100h</b><small>목표</small></div>
@@ -339,11 +343,12 @@
         <div class="notice-title">📣 응원 한마디 남기기</div>
         <textarea id="cheerInput" placeholder="동료들에게 응원 한마디를 남겨보세요"></textarea>
         <button class="btn btn-save" id="cheerSend" style="width:100%;">남기기</button>
-        <div class="share-note">익명으로 게시돼요 · 이름·학년은 공개되지 않아요</div>
+        <div class="share-note">익명으로 게시돼요· 이름·학년은 공개되지 않아요</div>
       </div>
 
       <div class="card note-card">
         <div class="notice-title">✉️ 선생님께 남기는 말</div>
+        <div id="teacherReplyList"></div>
         <textarea id="teacherNoteInput" placeholder="예: 사진이 안 올라가요, 시간 입력이 안 돼요 등 무엇이든 남겨주세요"></textarea>
         <button class="btn btn-save" id="teacherNoteSend" style="width:100%;">남기기</button>
         <div class="note-sent" id="noteSentMsg"></div>
@@ -482,6 +487,8 @@ let activeDateKey = null;
 let pendingPhotos = [];       // {type:'existing', url, fileId} | {type:'new', base64} 최대 5개
 const MAX_PHOTOS = 5;
 let leaderboardTimer = null;
+let cheerTickerIntervalId = null;
+let teacherReplyIntervalId = null;
 
 const $ = (id) => document.getElementById(id);
 const pad = (n) => String(n).padStart(2,'0');
@@ -554,7 +561,13 @@ async function showApp(){
   render();
   loadNotice();
   loadCheerTicker();
-  setInterval(loadCheerTicker, 30000); // 응원 게시판은 항상 보이므로 30초마다 자동 갱신
+  loadTeacherReplies();
+
+  // 나가기 후 재입장 시 타이머가 중복으로 쌓이지 않도록 기존 것을 먼저 정리
+  if(cheerTickerIntervalId) clearInterval(cheerTickerIntervalId);
+  if(teacherReplyIntervalId) clearInterval(teacherReplyIntervalId);
+  cheerTickerIntervalId = setInterval(loadCheerTicker, 30000); // 응원 게시판은 항상 보이므로 30초마다 자동 갱신
+  teacherReplyIntervalId = setInterval(loadTeacherReplies, 30000);
 }
 
 $('enterBtn').addEventListener('click', async ()=>{
@@ -961,6 +974,22 @@ function renderNoticeView(text){
 }
 
 /* ---------- 응원 게시판 (자동 스크롤 티커) ---------- */
+async function loadTeacherReplies(){
+  const container = $('teacherReplyList');
+  try{
+    const res = await api('getTeacherReplies', { studentKey: studentKey() });
+    const replies = res.replies || [];
+    if(replies.length === 0){ container.innerHTML = ''; return; }
+    container.innerHTML = replies.map(r=>{
+      const d = new Date(r.ts);
+      const timeStr = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      return `<div class="reply-item"><div class="r-label">👩‍🏫 선생님 답장</div><div class="r-msg">${(r.message||'').replace(/</g,'&lt;')}</div><div class="r-time">${timeStr}</div></div>`;
+    }).join('');
+  }catch(e){
+    // 조용히 실패 (응원 티커처럼 눈에 띄는 오류 메시지는 굳이 안 띄움)
+  }
+}
+
 async function loadCheerTicker(){
   const inner = $('cheerTickerInner');
   try{
@@ -1006,10 +1035,11 @@ $('teacherNoteSend').addEventListener('click', async ()=>{
   const msg = $('teacherNoteInput').value.trim();
   if(!msg){ showToast('메시지를 입력해주세요'); return; }
   try{
-    await api('saveTeacherNote', { grade: studentGrade, name: studentName, message: msg });
+    await api('saveTeacherNote', { grade: studentGrade, name: studentName, message: msg, studentKey: studentKey() });
     $('teacherNoteInput').value = '';
     $('noteSentMsg').textContent = '선생님께 전달되었습니다.';
     showToast('전송되었습니다');
+    loadTeacherReplies();
   }catch(e){
     $('noteSentMsg').textContent = '전송에 실패했습니다. 다시 시도해주세요.';
   }
