@@ -54,6 +54,10 @@
 
   .note-row{padding:12px 2px;border-bottom:1px solid var(--border);}
   .note-row:last-child{border-bottom:none;}
+  .reply-row{margin-top:8px;}
+  .reply-row textarea{min-height:52px;margin-bottom:6px;font-size:12.5px;}
+  .reply-send-btn{width:100%;padding:9px;border-radius:10px;border:none;font-weight:700;font-size:12.5px;cursor:pointer;}
+  .reply-unavailable{margin-top:6px;font-size:11px;color:var(--ink-soft);}
   .note-meta{font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;font-weight:600;}
   .note-msg{font-size:13.5px;line-height:1.5;}
   .empty-state{text-align:center;color:var(--ink-soft);font-size:12.5px;padding:20px 0;}
@@ -198,6 +202,12 @@
       <button class="close-btn" id="closeDetail">✕</button>
     </div>
     <div class="detail-grade" id="detailGrade"></div>
+
+    <div class="card" style="padding:16px;margin-bottom:14px;background:var(--paper);">
+      <div class="section-title" style="font-size:13px;margin-bottom:8px;">💬 이 학생에게 메시지 보내기</div>
+      <textarea id="directMsgInput" placeholder="이 학생에게만 보이는 메시지를 입력하세요" style="min-height:56px;margin-bottom:8px;font-size:12.5px;"></textarea>
+      <button class="btn btn-primary" id="directMsgSend" style="width:100%;padding:10px;font-size:12.5px;">보내기</button>
+    </div>
 
     <div class="battle-log-embed">
       <div class="b-ring-row">
@@ -437,9 +447,13 @@ function challengeDates(){
 
 let detailEntries = {};
 
+let currentDetailStudentKey = null;
+
 async function openStudentDetail(r){
+  currentDetailStudentKey = r.studentKey;
   $('detailName').textContent = r.name;
   $('detailGrade').textContent = r.grade || '';
+  $('directMsgInput').value = '';
   $('detailRingTotal').innerHTML = '0<span>h 0m</span>';
   $('detailRingPercent').textContent = '목표의 0%';
   $('detailRemain').textContent = '100h';
@@ -603,6 +617,22 @@ function renderDetailCalendar(){
     grid.appendChild(cell);
   });
 }
+$('directMsgSend').addEventListener('click', async ()=>{
+  const msg = $('directMsgInput').value.trim();
+  if(!msg){ showToast('메시지를 입력해주세요'); return; }
+  if(!currentDetailStudentKey){ showToast('학생 정보를 찾을 수 없어요'); return; }
+  const btn = $('directMsgSend');
+  btn.disabled = true; btn.textContent = '전송 중…';
+  try{
+    await api('saveTeacherReply', { studentKey: currentDetailStudentKey, message: msg });
+    $('directMsgInput').value = '';
+    showToast('메시지를 보냈어요');
+  }catch(e){
+    showToast('전송에 실패했어요. 다시 시도해주세요.');
+  }
+  btn.disabled = false; btn.textContent = '보내기';
+});
+
 $('closeDetail').addEventListener('click', ()=> $('detailOverlay').classList.remove('open'));
 $('detailOverlay').addEventListener('click', (e)=>{ if(e.target.id==='detailOverlay') $('detailOverlay').classList.remove('open'); });
 
@@ -646,13 +676,41 @@ async function loadNotes(){
       return;
     }
     container.innerHTML = '';
-    notes.forEach(n=>{
+    notes.forEach((n, idx)=>{
       const row = document.createElement('div');
       row.className = 'note-row';
       const d = n.ts ? new Date(n.ts) : null;
       const timeStr = d ? `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}` : '';
-      row.innerHTML = `<div class="note-meta">${n.grade||''} ${n.name||'익명'} · ${timeStr}</div><div class="note-msg">${(n.message||'').replace(/</g,'&lt;')}</div>`;
+      const hasKey = !!n.studentKey;
+      row.innerHTML = `
+        <div class="note-meta">${n.grade||''} ${n.name||'익명'} · ${timeStr}</div>
+        <div class="note-msg">${(n.message||'').replace(/</g,'&lt;')}</div>
+        ${hasKey ? `
+          <div class="reply-row" id="replyRow${idx}">
+            <textarea class="reply-input" id="replyInput${idx}" placeholder="이 학생에게만 보이는 답장을 입력하세요"></textarea>
+            <button class="btn btn-primary reply-send-btn" data-idx="${idx}" data-key="${n.studentKey}">답장 보내기</button>
+          </div>
+        ` : `<div class="reply-unavailable">⚠️ 이 문의는 이전 버전에서 저장되어 답장을 보낼 수 없어요</div>`}
+      `;
       container.appendChild(row);
+    });
+    container.querySelectorAll('.reply-send-btn').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const idx = btn.dataset.idx;
+        const key = btn.dataset.key;
+        const input = $('replyInput'+idx);
+        const msg = input.value.trim();
+        if(!msg){ showToast('답장 내용을 입력해주세요'); return; }
+        btn.disabled = true; btn.textContent = '전송 중…';
+        try{
+          await api('saveTeacherReply', { studentKey: key, message: msg });
+          input.value = '';
+          showToast('답장을 보냈어요');
+        }catch(e){
+          showToast('전송에 실패했어요. 다시 시도해주세요.');
+        }
+        btn.disabled = false; btn.textContent = '답장 보내기';
+      });
     });
   }catch(e){
     container.innerHTML = '<div class="empty-state">문의사항을 불러오지 못했어요.</div>';
