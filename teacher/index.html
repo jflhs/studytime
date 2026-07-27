@@ -135,10 +135,10 @@
   .b-weekdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:5px;}
   .b-weekdays div{text-align:center;font-size:9.5px;color:var(--b-ink-soft);font-weight:700;padding:3px 0;}
   .b-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
-  .b-day{position:relative;aspect-ratio:1/1;border-radius:9px;border:1px solid var(--b-border);background:#1A1315;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:3px;}
+  .b-day{position:relative;aspect-ratio:1/1;min-width:0;overflow:hidden;border-radius:9px;border:1px solid var(--b-border);background:#1A1315;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:3px;}
+  .b-day .b-time{font-family:'Black Han Sans', sans-serif;font-size:10px;font-weight:700;margin-top:4px;color:#fff;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .b-day .b-cam{position:absolute;bottom:2px;right:3px;font-size:7px;white-space:nowrap;}
   .b-day .b-num{font-weight:700;font-size:8px;color:var(--b-ink-soft);position:absolute;top:3px;left:4px;}
-  .b-day .b-time{font-family:'Black Han Sans', sans-serif;font-size:11px;font-weight:700;margin-top:4px;color:#fff;}
-  .b-day .b-cam{position:absolute;bottom:2px;right:3px;font-size:7px;}
   .b-day-panel{margin-top:14px;padding-top:14px;border-top:1px solid var(--b-border);}
   .b-day-panel .bd-date{font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;}
   .b-day-panel .bd-note{font-size:12px;color:var(--b-ink-soft);line-height:1.5;margin-bottom:8px;}
@@ -607,7 +607,7 @@ function renderDetailCalendar(){
       t.className = 'b-time';
       t.style.color = cssVar(wd.tx);
       const h = Math.floor(entry.minutes/60), mm = entry.minutes%60;
-      t.textContent = h>0 ? `${h}h${mm>0?mm:''}` : `${mm}m`;
+      t.textContent = `${h}:${String(mm).padStart(2,'0')}`;
       cell.appendChild(t);
     }
     if(entry && entry.photos && entry.photos.length){
