@@ -144,6 +144,10 @@
   .reply-item .r-label{font-size:10.5px;font-weight:800;color:var(--gold);margin-bottom:3px;}
   .reply-item .r-msg{font-size:12.5px;color:var(--ink);line-height:1.5;}
   .reply-item .r-time{font-size:10px;color:var(--ink-soft);margin-top:4px;}
+  .my-note-item{background:rgba(77,171,247,.14);border:1px solid rgba(77,171,247,.32);border-radius:10px;padding:10px 12px;margin-bottom:10px;}
+  .my-note-item .r-label{font-size:10.5px;font-weight:800;color:#4DABF7;margin-bottom:3px;}
+  .my-note-item .r-msg{font-size:12.5px;color:var(--ink);line-height:1.5;}
+  .my-note-item .r-time{font-size:10px;color:var(--ink-soft);margin-top:4px;}
 
   .overlay{position:fixed;inset:0;background:rgba(31,42,68,.45);display:none;align-items:flex-end;justify-content:center;z-index:50;}
   .overlay.open{display:flex;}
@@ -649,7 +653,16 @@ function renderRing(){
 
 function renderMotivation(pct){
   let title, desc;
-  if(pct >= 120){ title='전설의 시작'; desc='한계를 넘어섰다. 이제 아무도 널 막을 수 없다.'; }
+  if(pct >= 300){ title='여름의 추억'; desc='300시간. 이건 진짜 노력의 증거다.'; }
+  else if(pct >= 280){ title='포기란 없다!'; desc='끝이 보여도 속도를 늦추지 않는다.'; }
+  else if(pct >= 260){ title='나는 멈추지 않아!'; desc='여기서 멈출 이유가 없다. 계속 간다.'; }
+  else if(pct >= 240){ title='한계를 넘어!'; desc='스스로 정한 한계를 이미 넘어섰다.'; }
+  else if(pct >= 220){ title='여름의 열정'; desc='재능보다 무서운 건 꾸준함이다.'; }
+  else if(pct >= 200){ title='순공의 신'; desc='200시간. 이 정도면 순공의 신이라 불릴 자격 있다.'; }
+  else if(pct >= 180){ title='한 단계 더'; desc='목표는 이미 넘었다. 그래도 계속 간다.'; }
+  else if(pct >= 160){ title='충분히 잘 하고 있어!'; desc='지금 이대로도 훌륭하다. 자신을 믿어라.'; }
+  else if(pct >= 140){ title='페이스 유지'; desc='지금 이 속도, 그대로만 가면 된다.'; }
+  else if(pct >= 120){ title='전설의 시작'; desc='한계를 넘어섰다. 이제 아무도 널 막을 수 없다.'; }
   else if(pct >= 100){ title='정복 완료!'; desc='목표를 넘어섰다. 진짜 전사다.'; }
   else if(pct >= 70){ title='전사여, 계속하라'; desc='거의 다 왔다. 여기서 멈추면 그 동안의 땀이 아깝다.'; }
   else if(pct >= 50){ title='절반을 넘었다'; desc='꾸준함이 곧 힘이다. 속도를 늦추지 마라.'; }
@@ -987,13 +1000,23 @@ function renderNoticeView(text){
 async function loadTeacherReplies(){
   const container = $('teacherReplyList');
   try{
-    const res = await api('getTeacherReplies', { studentKey: studentKey() });
-    const replies = res.replies || [];
-    if(replies.length === 0){ container.innerHTML = ''; return; }
-    container.innerHTML = replies.map(r=>{
-      const d = new Date(r.ts);
+    const [notesRes, repliesRes] = await Promise.all([
+      api('getMyTeacherNotes', { studentKey: studentKey(), grade: studentGrade, name: studentName }),
+      api('getTeacherReplies', { studentKey: studentKey() })
+    ]);
+    const myNotes = (notesRes.notes || []).map(n => ({ ts: n.ts, message: n.message, from: 'me' }));
+    const replies = (repliesRes.replies || []).map(r => ({ ts: r.ts, message: r.message, from: 'teacher' }));
+    const thread = myNotes.concat(replies).sort((a,b) => a.ts - b.ts); // 오래된 것부터 대화 순서대로
+
+    if(thread.length === 0){ container.innerHTML = ''; return; }
+    container.innerHTML = thread.map(item=>{
+      const d = new Date(item.ts);
       const timeStr = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      return `<div class="reply-item"><div class="r-label">👩‍🏫 선생님 답장</div><div class="r-msg">${(r.message||'').replace(/</g,'&lt;')}</div><div class="r-time">${timeStr}</div></div>`;
+      const msg = (item.message||'').replace(/</g,'&lt;');
+      if(item.from === 'teacher'){
+        return `<div class="reply-item"><div class="r-label">👩‍🏫 선생님 답장</div><div class="r-msg">${msg}</div><div class="r-time">${timeStr}</div></div>`;
+      }
+      return `<div class="my-note-item"><div class="r-label">🙋 내가 남긴 말</div><div class="r-msg">${msg}</div><div class="r-time">${timeStr}</div></div>`;
     }).join('');
   }catch(e){
     // 조용히 실패 (응원 티커처럼 눈에 띄는 오류 메시지는 굳이 안 띄움)
