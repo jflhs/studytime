@@ -1006,7 +1006,7 @@ async function loadTeacherReplies(){
     ]);
     const myNotes = (notesRes.notes || []).map(n => ({ ts: n.ts, message: n.message, from: 'me' }));
     const replies = (repliesRes.replies || []).map(r => ({ ts: r.ts, message: r.message, from: 'teacher' }));
-    const thread = myNotes.concat(replies).sort((a,b) => a.ts - b.ts); // 오래된 것부터 대화 순서대로
+    const thread = myNotes.concat(replies).sort((a,b) => b.ts - a.ts); // 최신 것부터 위로
 
     if(thread.length === 0){ container.innerHTML = ''; return; }
     container.innerHTML = thread.map(item=>{
