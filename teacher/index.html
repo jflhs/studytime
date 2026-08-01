@@ -46,12 +46,6 @@
   .section-title{font-weight:700;font-size:17px;margin-bottom:12px;}
   .notice-current{font-size:13px;color:var(--ink-soft);margin-bottom:10px;padding:10px 12px;background:var(--paper);border-radius:10px;white-space:pre-wrap;}
 
-  .rank-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--border);}
-  .rank-row:last-child{border-bottom:none;}
-  .rank-num{width:24px;font-weight:700;font-size:14px;color:var(--ink-soft);text-align:center;}
-  .rank-name{flex:1;font-size:13.5px;font-weight:600;}
-  .rank-time{font-size:14px;font-weight:600;}
-
   .note-row{padding:12px 2px;border-bottom:1px solid var(--border);}
   .note-row:last-child{border-bottom:none;}
   .reply-row{margin-top:8px;}
@@ -136,7 +130,7 @@
   .b-weekdays div{text-align:center;font-size:9.5px;color:var(--b-ink-soft);font-weight:700;padding:3px 0;}
   .b-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
   .b-day{position:relative;aspect-ratio:1/1;min-width:0;overflow:hidden;border-radius:9px;border:1px solid var(--b-border);background:#1A1315;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:3px;}
-  .b-day .b-time{font-family:'Black Han Sans', sans-serif;font-size:10px;font-weight:700;margin-top:4px;color:#fff;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .b-day .b-time{font-size:9px;font-weight:700;margin-top:4px;color:#fff;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .b-day .b-cam{position:absolute;bottom:2px;right:3px;font-size:7px;white-space:nowrap;}
   .b-day .b-num{font-weight:700;font-size:8px;color:var(--b-ink-soft);position:absolute;top:3px;left:4px;}
   .b-day-panel{margin-top:14px;padding-top:14px;border-top:1px solid var(--b-border);}
@@ -164,19 +158,13 @@
     </div>
 
     <div class="card">
-      <div class="refresh-link" id="refreshBoard">↻ 새로고침</div>
-      <div class="section-title">🏆 전체 순위</div>
-      <div id="rankList"><div class="empty-state">불러오는 중…</div></div>
-    </div>
-
-    <div class="card">
       <div class="refresh-link" id="refreshRoster">↻ 새로고침</div>
       <div class="section-title">👥 학생 전체 보기</div>
       <div class="roster-controls">
         <div class="roster-sort">
-          <button class="sort-btn active" data-sort="name">이름순</button>
+          <button class="sort-btn" data-sort="name">이름순</button>
           <button class="sort-btn" data-sort="grade">학년순</button>
-          <button class="sort-btn" data-sort="time">시간순</button>
+          <button class="sort-btn active" data-sort="time">시간순</button>
         </div>
         <div class="roster-filter" id="gradeFilter">
           <button class="filter-chip active" data-grade="">전체</button>
@@ -276,7 +264,7 @@ const WEEKDAY = [
 ];
 
 let rosterData = [];
-let rosterSort = 'name';
+let rosterSort = 'time';
 let rosterGradeFilter = '';
 
 const $ = (id) => document.getElementById(id);
@@ -323,7 +311,6 @@ async function api(action, payload, _retried){
 }
 
 loadNotice();
-loadLeaderboard();
 loadRoster();
 loadCheerBoard();
 loadNotes();
@@ -354,29 +341,6 @@ $('noticeSave').addEventListener('click', async ()=>{
 });
 
 /* Leaderboard */
-async function loadLeaderboard(){
-  const list = $('rankList');
-  list.innerHTML = '<div class="empty-state">불러오는 중…</div>';
-  try{
-    const res = await api('getLeaderboard');
-    const results = res.leaderboard || [];
-    if(results.length === 0){
-      list.innerHTML = '<div class="empty-state">아직 등록된 기록이 없어요.</div>';
-      return;
-    }
-    const fmt = (mins)=>{ const h=Math.floor((mins||0)/60), m=(mins||0)%60; return `${h}h ${m}m`; };
-    list.innerHTML = '';
-    results.forEach((r,i)=>{
-      const row = document.createElement('div');
-      row.className = 'rank-row';
-      row.innerHTML = `<div class="rank-num">${i+1}</div><div class="rank-name">${r.name}${r.grade?` (${r.grade})`:''}</div><div class="rank-time">${fmt(r.totalMinutes)}</div>`;
-      list.appendChild(row);
-    });
-  }catch(e){
-    list.innerHTML = '<div class="empty-state">순위를 불러오지 못했어요.</div>';
-  }
-}
-$('refreshBoard').addEventListener('click', loadLeaderboard);
 
 /* ---------- 학생 전체 보기 ---------- */
 async function loadRoster(){
