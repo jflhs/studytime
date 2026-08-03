@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>다시, 그 마음가짐</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<style>
+  :root{
+    --sky:#EAF6FF; --card:#FFFFFF; --border:#E3F1FB; --ink:#243B4A; --ink-soft:#7C93A3;
+    --coral:#FF7A6E; --lemon:#FFC93C; --mint:#1FC8A9; --ocean:#3AA6D6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#FCFEFF;
+    color:var(--ink);
+    font-family:'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:20px 16px 60px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  .stickers{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .stickers span{position:absolute;font-size:52px;opacity:.16;filter:saturate(1.1);}
+  .wrap{position:relative;z-index:1;}
+  .wrap{max-width:560px;margin:0 auto;}
+
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:11.5px;letter-spacing:.06em;font-weight:800;color:#fff;
+    background:linear-gradient(90deg, var(--ocean), var(--mint));
+    box-shadow:0 6px 16px rgba(58,166,214,.30);
+    padding:7px 15px;border-radius:100px;margin-bottom:14px;
+  }
+  h1{
+    font-family:'Jua', sans-serif;font-weight:400;font-size:30px;
+    margin:0 0 10px;line-height:1.3;color:var(--ink);
+  }
+  h1 .hl{color:var(--coral);}
+  .lead{font-size:13.5px;color:var(--ink-soft);line-height:1.7;margin-bottom:20px;}
+  .lead b{color:var(--ocean);}
+
+  .filters{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap;}
+  .filter-chip{
+    font-size:12.5px;font-weight:700;padding:8px 16px;border-radius:100px;
+    border:1.5px solid var(--border);background:#fff;color:var(--ink-soft);cursor:pointer;
+  }
+  .filter-chip.active{background:linear-gradient(90deg,var(--coral),#FF9A70);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(255,122,110,.35);}
+
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:18px;
+    padding:18px 20px;margin-bottom:14px;position:relative;overflow:hidden;
+    box-shadow:0 4px 16px rgba(58,166,214,.07);
+  }
+  .card::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:5px;
+  }
+  .card:nth-child(4n+1)::before{background:var(--coral);}
+  .card:nth-child(4n+2)::before{background:var(--lemon);}
+  .card:nth-child(4n+3)::before{background:var(--mint);}
+  .card:nth-child(4n+4)::before{background:var(--ocean);}
+
+  .card-name{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:'Jua', sans-serif;font-size:15px;color:var(--ink);
+    margin-bottom:10px;
+  }
+  .card-name .grade-tag{
+    font-family:'Pretendard Variable', Pretendard, sans-serif;
+    font-size:10.5px;font-weight:700;color:var(--ocean);
+    background:#EAF6FF;border:1px solid var(--border);border-radius:100px;
+    padding:3px 10px;
+  }
+  .card-text{font-size:13.5px;line-height:1.7;color:var(--ink);white-space:pre-wrap;}
+
+  .empty-state{text-align:center;color:var(--ink-soft);font-size:13px;padding:40px 0;}
+</style>
+</head>
+<body>
+<div class="stickers">
+  <span style="top:4%; left:-3%; transform:rotate(-18deg);">🍉</span>
+  <span style="top:2%; right:-2%; transform:rotate(15deg); font-size:44px;">☀️</span>
+  <span style="top:28%; right:6%; transform:rotate(-10deg); font-size:40px;">🕶️</span>
+  <span style="top:46%; left:2%; transform:rotate(12deg); font-size:44px;">🌊</span>
+  <span style="top:62%; right:-4%; transform:rotate(-20deg);">🍋</span>
+  <span style="top:78%; left:-2%; transform:rotate(8deg); font-size:44px;">🍧</span>
+  <span style="top:88%; right:8%; transform:rotate(18deg); font-size:38px;">🐚</span>
+</div>
+<div class="wrap">
+  <div class="eyebrow">☀️ Summer Check-in · 전남외고</div>
+  <h1>다시, 그 <span class="hl">마음가짐</span></h1>
+  <div class="lead">
+    챌린지를 신청할 때 여러분이 직접 남긴 다짐이에요. 🌟<br>
+    벌써 <b>절반</b>을 지나온 지금, 그때의 마음을 다시 한 번 꺼내볼까요? 🍉
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-chip active" data-grade="">전체</button>
+    <button class="filter-chip" data-grade="1학년">1학년</button>
+    <button class="filter-chip" data-grade="2학년">2학년</button>
+    <button class="filter-chip" data-grade="3학년">3학년</button>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+const DATA = [{"grade": "1학년", "masked": "정OO", "text": "꼭 참여하고 싶습니다! 중학교에서 외고로 올라왔을 때 열심히하고자 했던 마음가짐을 다시 기억하고 싶습니다. 1학기 때 부족했던 과목을 이번 여름 방학때 보충하고 2학기 시험을 위해 정말 열심히 해보고 싶습니다. 이번 1학기를 통해 국어, 영어, 수학은 무조건 조금씩이라도 매일매일 하는 것이 중요하다는 것을 알게 되었습니다. 중학교 3학년에서 고등학교로 올라가는 겨울 방학 때 이 부분이 부족했던 것 같습니다. 그래서 이번 여름 방학은 겨울 방학 때와 1학기때를 보완하면서 짧은 시간을 알차고 효율적으로 보내고 싶습니다. 4주동안 100시간 순공 채우기는 쉽지 않겠지만, 하루에 3시간씩 매일매일하면 성취할 수 있을 것이라고 생각합니다."}, {"grade": "1학년", "masked": "장OO", "text": "한 학기 동안 고등학교를 다니면서 방학 때 기초를 충분히 다지는 것이 중요하다고 생각하여 꼭 성실하게 공부를 해야겠다고 생각했습니다. 그런데 마침 이렇게 의지를 불타게 하는 챌린지가 생긴 만큼 꼭 100시간을 채워야겠다는 의지가 듭니다. 1학기에 부족했던 공부, 2학기 때 성장시킬 부분을 방학 때 채우면서 이 챌린지와 동시에 재밌게 진행할 수 있을 것 같습니다."}, {"grade": "1학년", "masked": "김OO", "text": "쉽지 않은 목표라는 걸 알고 있습니다. 하지만 하루하루 계획을 세워 꾸준히 실천한다면 충분히 달성할 수 있다고 생각합니다. 중요한 것은 단기간의 의욕보다 매일 포기하지 않는 꾸준함이라고 생각하며, 그 마음가짐으로 4주 동안 최선을 다해 100시간 순공을 채우겠습니다 !"}, {"grade": "1학년", "masked": "감OO", "text": "allez"}, {"grade": "1학년", "masked": "윤OO", "text": "2학기 성적 못 올리면 전학간다"}, {"grade": "1학년", "masked": "김OO", "text": "저는 자기주도학습이 가장 중요하고 제가 가장 자신 있는 것이라 생각합니다. 방학이라고 해서 느슨하게 쳐져서 그냥 의미 없게 보내기 싫고 이 챌린지를 참여 함으로써 제 자신을 공부하도록 만들고 싶습니다 꼭 참여하고 성실하게 해낼 자신이 있습니다!!"}, {"grade": "1학년", "masked": "김OO", "text": "7월 10일에 진행한 수능만점자의 특강을 듣고 난 후, 계획의 중요성을 깨달았습니다. 그리고 7월 8일에 진행한 제 유형에서 플래너가 큰 역할을 할 것이라는 것도 알았습니다. 저는 플래너 작성을 통해 보다 효율적인 공부를 하려고 합니다. 이 프로그램에 참여하여 공부도 하고 보상도 받고 싶습니다."}, {"grade": "1학년", "masked": "박OO", "text": "저는 이 학교에 입학하기 전부터 스스로 공부 시간을 확보하기 위해 계획을 세우고 실천하는 습관을 만들기 위해 꾸준히 노력해 온 경험이 있습니다. 혼자 목표를 세우고 실천하는 과정이 좀처럼 쉽지는 않았지만 방학동안 하였던 그 경험을 통해 꾸준함이 내가 방학중 얻은 가장 소중한 것을 배웠습니다. 그래서 이번 방학 동안 하는 챌린지는 단순히 정해진 시간을 채우는 활동이 아닌 제 학습 습관을 한 단계 더 성장시키고 스스로와의 약속을 끝까지 지켜내는 의미 있는 도전이 될것이라고 생각합니다. 여름방학 동안 하루하루 계획을 성실하게 실천하며 온전히 공부에 집중하는 시간을 만들어 자기주도학습 능력을 더욱 키우고 싶으며 단순히 시간만 채우는 것이 아닌 꾸준함이 빛을 발 할 수 있도록 겨울방학때 문제가 되었던 점들을 보완해 나가며 다시 한번 도전해보고 싶습니다. 또한 100시간이라는 목표를 달성하는 것에 그치지 않고 방학이 끝난 뒤에도 이러한 학습 습관을 꾸준히 이어가 제 꿈을 향해 흔들림 없이 나아가는 학생이 될것이며 이번 챌린지를 통해 성실함과 꾸준함을 제 가장 큰 강점으로 만들고 스스로의 가능성을 더 넓혀가며 증명하는 뜻깊은 여름방학을 보내겠습니다."}, {"grade": "1학년", "masked": "강OO", "text": "1학기 때 원하는만큼의 성적을 받지 못했는데, 여름방학 때 공부를 열심히 해서 2학기에는 스스로가 만족할 만한 결과를 받고 싶습니다. 또한 좋은 공부 습관을 만들어서 2, 3 학년을 대비하고 싶습니다. 만약 목표를 달성하게 된다면 스스로에게 약속한 것을 달성했다는 것으로 뿌듯하고 행복할 것 같습니다. 반드시 목표를 달성해서 제가 원하는 스스로에게 부끄럽지 않은 사람이 되고 싶습니다."}, {"grade": "1학년", "masked": "김OO", "text": "열심히 공부해서 1학기 성적을 만회하고 예습도 꾸준히 하여 공부량과 실력을 늘리고 싶다."}, {"grade": "2학년", "masked": "김OO", "text": "저는 이미 여름방학 공부 계획을 시험 끝난 주에 다 세웠습니다. 2학년 내신 공부와 수능 공부를 계확하고 있습니다. 그리고 여름방학 때 공부할 책들도 모두 주문 완료한 상태고 열품타도 매일 키며 공부 현황을 체크하고 있습니다. 여름방학에 빡공해서 성적을 올리고 싶다는 생각 하나로 지금 머릿속이 꽉 찼습니다. 지금도 하루 4시간 순공이라는 목표를 세우고, 시험 끝난 뒤에도 공부 습관이 흐트러지지 않도록 신경을 기울이고 있습니다. 순공 100시간은 제가 바라던 바입니다...!! 여름방학 때 열심히 공부해서 제 성적을 뒤집고 싶습니다."}, {"grade": "2학년", "masked": "신OO", "text": "100시간 채워야지!!!!보다는 한 시간, 한 시간씩 채우다 보면 100시간은 어느 순간 넘어있을 거라고 생각합니다 ㅎㅎ \n그렇게 하다보면 의미있는 방학이 될 거라고 믿습니다!! 기회주시면 열심히 하겠습니다. 감사합니다♥"}, {"grade": "2학년", "masked": "윤OO", "text": "제가 평소에도 약간 강압을 해야지 열심히 사는데 방학때 학원도 1개밖에 안다녀서 남은 시간 나태하게 보낼까봐 이 100시간 챌린지에 참여하여 누구보다 시간 알차하게 보내서 2학기때는 지금보다 더 높은 성적 얻고 싶습니다. 또 공부를 누군가와 함께하면 동기부여도 되고 서로서로 의지도 되어 100시간은 어렵지않게 해낼 수 있을거라고 생각합니다!!!! 저 진짜 누구보다 열심히 할 자신있습니다 꼭 뽑아주세요~~~~~~!!!!!!!!!!!!!!!"}, {"grade": "2학년", "masked": "기OO", "text": "4주 동안 순공 100시간을 채우는 것이 쉬운 목표가 아니라는 점을 잘 알고 있습니다. 하지만 목표를 이루기 위해서는 의지뿐만 아니라 꾸준한 실천이 가장 중요하다고 생각합니다. 하루하루 계획한 공부량을 성실히 실천하면서, 힘든 날에도 포기하지 않고 끝까지 해내겠습니다. 이번 활동을 단순히 시간을 채우는 과정이 아니라 스스로의 공부 습관과 끈기를 기르는 기회로 삼아서, 책임감 있는 자세로 4주를 보내겠습니다"}, {"grade": "2학년", "masked": "이OO", "text": "죽었다 생각하고 열심히 하겠습니다ㅜㅜ!!!!!!!!"}, {"grade": "2학년", "masked": "박OO", "text": "최근 학교 생활을 하면서 작년보다 훨씬 불성실해진 저를 보고 \"나 왜이렇게 살지..???\"라는 생각을 많이 하고 있습니다. 1학년 2학기부터 계속해서 성적은 떨어지고 있고, 정확한 목표 없이 대충대충 살고 있는 것 같은 느낌이 걔속 들었습니다. 이 상태에 계속 머물러 있다간 나중에 정말 크게 후회할 것 같았고, 저를 싫어하게 될 것 같아 이번에는 꼭 열심히 공부를 하고 중학교 때처럼 무엇이라도 하나하나 소중하게 여기며 생활을 하겠다고 다짐했습니다. 4주동안 순공 100시간 채우기 챌린지를 하며 꼭 중학교때의 제 모습으로, 초심으로 돌아가고 싶습니다!!"}, {"grade": "2학년", "masked": "김OO", "text": "저는 매일 다음번에는 진짜 열심히해야지 하고 다짐을 하곤 합니다. 하지만 막상 시험기간이 되니 수행평가가 한번에 몰려오고 공부를 하지않게 됩니다. 강제적으로 하진않으면 절대 하지않는 스타일이라 이번 챌린지를 통해 순공 시간을 늘리고 다음 내신성적을 올리고싶습니다!!"}, {"grade": "2학년", "masked": "엄OO", "text": "매일매일을 시험 전주처럼 살아가겠습니다! 정말 잘할 자신 있습니다!!"}, {"grade": "2학년", "masked": "김OO", "text": "100시간이라는 순공시간이 쉽지 않은 목표라는 것을 알고 있습니다. 하지만 어렵기 때문에 더욱 도전해보고싶습니다. 하루 평균 3~4시간 이상 꾸준히 공부하면 충분히 달성할 수 있는 목표라고 생각합니다. 중간에 힘든 날이 있더라도 포기하지 않고 계획을 조정하며 끝까지 목표를 채우겠습니다. 이번 4주 동안은 스스로에게 책임감을 가지고 반드시 100시간을 달성하겠습니다."}, {"grade": "2학년", "masked": "강OO", "text": "항상 일주일 열심히 하면 그 다음주는 좀 해이해지고 그게 반복되는 느낌이 드는데, 약간의 의무감과 시간을 채운다는, 성과가 눈에 보이는 100시간 순공채우기를 통해서 여름방학을 더 알차게 보내고 싶습니다!!! 2학년 2학기 성적 더 꼼꼼히 준비하고 좋은 성과 이루기위해서 여름방학 공부 더더 열심히 하고싶습니다!!!!❤️"}, {"grade": "2학년", "masked": "최OO", "text": "일학기에 너무 성적이 떨어져서 너무 심각하다는걸 느껴서 이번 방학에 새 사람으로 태어나려합니다. 방학에도 규칙적으로 공부하고자 참여합니다."}, {"grade": "2학년", "masked": "주OO", "text": "겨울방학동안 300시간 가까이 채워본 기억을 떠올리며 9모 수학 1등을 위해 공부하겠습니다"}, {"grade": "2학년", "masked": "정OO", "text": "4주 동안 100시간을 채우는 과정이 쉽지 않다는 점을 잘 알고 있습니다. 책임감을 가지고 하루하루 꾸준히 참여하고 단순한 시간 채우기가 아닌 의미 있는 경험으로 만들겠습니다! 최선을 다하겠습니다"}, {"grade": "2학년", "masked": "한OO", "text": "절실함과 급박함을 이학년 올라와서 처음 느꼈습니다. 남들보다 늦은 걸 깨닫고 공부를 해도 학기 중에는 급급한 진도와 수행평가 등으로 충분하고도 꼼꼼히 이해할 수 있는 시간이 턱 없이 부족했습니다. 그렇기에 이번 방학이 저에게 주어진 마지막 기회이자 터닝포인트란 생각이 들었습니다. 억지로 시간을 채워서 머릿속에 집어 넣는 것이 아니라 스스로와 싸움을 하는 시간이라 생각 들고, 제 의지와 마음가짐에 의해 제가 얼만큼의 역량을 낼 수 있는 사람인지 보여드리겠습니다."}, {"grade": "2학년", "masked": "장OO", "text": "시간이 큰 것은 분명한 한계가 있다고 생각합니다. 하지만 저는 평소에 시험 기간이 아니더라도 꾸준히 공부하는 습관을 지니고있기 때문에 100시간 순공시간을 위해서 열심히 할 자신이 있습니다!"}, {"grade": "2학년", "masked": "채OO", "text": "쉬운 길은 아니지만, 4주 뒤에 몰라보게 성장해 있을 제 모습을 기대하며 지치지 않는 열정과 성실함으로 반드시 100시간을 완수하겠습니다."}, {"grade": "2학년", "masked": "정OO", "text": "저는 이번 여름방학에 아침 6시부터 공부할 계획을 세웠습니다. 제가 생각했을 때, 제가 쉬지 않고 집중을 지속할 수 있는 시간이 1시간 30분이라고 생각하여 그에 맞는 시간표를 세웠습니다. 저는 이 활동이 제 계획을 더욱 체계적으로 만들어주고, 달성할 수 있도록 도와주는 동기가 된다고 생각합니다. 이번 여름방학은 제가 제 자신에게 더이상 실망하지 않을 마지막 기회라고 생각합니다. 이번 여름 방학을 통해 이전에 저를 바꾸고 싶습니다. 이번이 아니면 너무 늦을 것 같고, 이번에도 해내지 못한다면 다음에도 같은 핑계를 반복할 것이라는 생각을 가지고 있습니다. 1학년 때는 스스로에게 최선을 다하지 않았고, 어려운 일이 생기면 쉽게 포기했던 적이 많았습니다. 하지만 이제는 더 이상 그런 모습으로 제 자신을 실망시키고 싶지 않습니다. 이번 여름방학 동안 하루에 최소 4시간 이상 수학 공부를 꾸준히 실천하여 실력을 높여, 졸업하기 전에는 반드시 수학 1등급을 달성하는 것이 저의 가장 큰 목표입니다. 100시간 공부 프로젝트를 끝까지 성공하여 스스로와의 약속을 지키고, 더 성실하고 성장한 모습으로 새 학기를 맞이하고 싶습니다."}, {"grade": "2학년", "masked": "이OO", "text": "4주동안 100시간 순공시간을 채우는 것이 쉬운일은 아니라는 것을 잘 알고 있습니다. 그러나 이번활동에 참여한다면 참여하지 않고 계획없이 즉흥적으로 공부하는 것 보다 좀 더 구체적인 목표를 설정하고 공부 할 수 있고 그 과정에서 그동안 흘려보냈던 시간들까지 꼼꼼하게 활용할 수 있을 것 입니다.\n이번주에 진로적성검사 분석을 하면서 저에게는 공부시간을 확인하고 구체적인 목표를 항상 설정하는 것이 중요하다고 했기에 달성의 유무를 떠나서 2학기 학업습관에 큰 도움이 될것이라 믿고 지원하였습니다."}, {"grade": "2학년", "masked": "김OO", "text": "지난 겨울방학 동안 하루 평균 10시간 정도 공부한 경험이 있어 100시간이라는 목표가 낯설지는 않습니다.(물론 꾸준히 실천하는 것은 언제나 쉽지 않은 것이라는 걸 알기에 결코 쉬운 도전이라고 생각하지는 않습니다.) 그러나 지난 방학에는 많은 시간을 공부에 투자했음에도 기대했던 만큼의 결과를 얻지 못해 아쉬움이 남았습니다. 그래서 이번 프로그램을 통해 다시 한 번 스스로에게 도전해보고 싶습니다. 중요한 것은 순간적인 의지가 아니라 꾸준함이라고 생각하며, 이번에도 스스로와의 약속을 지켜 100시간을 달성하고 싶습니다."}, {"grade": "2학년", "masked": "박OO", "text": "최대한 성실히 임하겠습니다. 저는 평소에 국어나 영어에는 관심이 많고, 성적도 괜찮게 나오는 편이라고 생각합니다. 하지만 수학이나 과학 같은 경우는 흥미가 부족해 상대적으로 공부를 덜 해 성적이 잘 나오지 않았습니다. 저는 혼자서 계획은 잘 세우지만 실천까지 추진력과 끈기가 부족합니다. 그래서 저는 지금까지 같이 공부를 하는 스터디나 서로를 끌어주는 멘토링 활동에서 더 눈에 띄는 성과를 냈었다고 생각합니다. 저는 이번 방학에 순공시간 100시간 챌린지를 통해, 제가 부족한 수학과 과학을 중점적으로 공부해 보려고 합니다. 학기 중에는 IB나 수행평가, 교과 진도 등 때문에 제가 취약한 수학이나 화학에 댜해 깊게 고민하고 계속 따로 문제를 풀 시간이 충분하지 않아 방학을 최대한 잘 이용해보고 싶은데, 이번 챌린지가 제게 큰 도움이 될 것 같습니다. 늘 성적을 올리고 싶다는 막연한 의지와 욕심은 있었지만, 사실 최선을 다해서 무언가를 해본 적이 없는 것 같다고 생각합니다. 이번 챌린지에 참가해서 저도 무언가에 최선을 다 할 수 있는 사람이라는 것을 스스로에게 증명해보고 싶습니다. 이루고자 있는 목표가 있는 만큼 더 열심히 하겠습니다. 순공 시간으로 100시간을 채우는 것이 물론 어려울 수 있지만, 이 어려움을 극복해야 앞으로 더 나아갈 수 있을 거라고 생각합니다. 이 챌린지를 통해 스스로에게 자신감을 갖고, 저도 할 수 있다는 생각을 바탕으로 앞으로 남은 1년 반의 학교 생활에 최선을 다하고 싶습니다. 누구보다 열심히 임할 자신이 있습니다. 꼭 뽑아주십쇼~!!"}, {"grade": "2학년", "masked": "김OO", "text": "이번 100시간 순공 목표는 단순히 시간을 채우기 위한 도전이 아니라, 저 자신의 공부 습관과 끈기를 기르는 과정이라고 생각합니다. 공부를 하다 보면 집중이 잘되지 않는 날도 있고, 지치거나 포기하고 싶은 순간도 있겠지만 그럴 때마다 처음 세운 목표를 떠올리며 끝까지 최선을 다하겠습니다. 하루하루 계획한 학습량을 성실하게 실천하고, 시간을 보내는 것보다 얼마나 집중해서 공부했는지를 더 중요하게 생각하며 임하겠습니다. 또한 이번 기회를 통해 미루는 습관을 줄이고 꾸준히 노력하는 자세를 기르겠습니다. 어려운 과목이라고 피하지 않고 부족한 부분을 하나씩 보완하며, 이해가 될 때까지 반복해서 공부하겠습니다. 100시간을 모두 채우는 순간에는 단순히 기록만 남는 것이 아니라, 이전보다 성장한 실력과 자신감을 얻을 수 있도록 최선을 다하겠습니다. 이번 목표를 반드시 달성하여 스스로와의 약속을 지키고, 앞으로도 성실하게 공부하는 습관을 이어가도록 하겠습니다! :)"}, {"grade": "3학년", "masked": "정OO", "text": "수능을 앞두고 있는 고3인 만큼 순공시간 100시간 쯤이야 당연히 해야할 일이라고 생각합니다"}, {"grade": "3학년", "masked": "이OO", "text": "대학가려면해야만"}];
+
+const listEl = document.getElementById('list');
+
+function render(gradeFilter){
+  const rows = gradeFilter ? DATA.filter(d => d.grade === gradeFilter) : DATA;
+
+  if(rows.length === 0){
+    listEl.innerHTML = '<div class="empty-state">해당하는 다짐이 없어요.</div>';
+    return;
+  }
+
+  listEl.innerHTML = rows.map(d => `
+    <div class="card">
+      <div class="card-name"><span class="grade-tag">${d.grade}</span> ${d.masked}</div>
+      <div class="card-text">${d.text.replace(/</g,'&lt;')}</div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.filter-chip').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    render(btn.dataset.grade);
+  });
+});
+
+render('');
+</script>
+</body>
+</html>
